@@ -1,1 +1,0 @@
-# ProjetorIntegrador-Senac

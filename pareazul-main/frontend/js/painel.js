@@ -1,7 +1,24 @@
 function atualizaPainel(){
+    atualizaDadosPerfil();
     listarCartoes();
     listarVeiculos();
     listarEstacionamentos();
+}
+
+function atualizaDadosPerfil(){
+    const telefone_usuario_logado = sessionStorage.getItem("telefone_usuario_logado");
+    document.querySelector("#telefone-usuario").value = telefone_usuario_logado;
+    
+    const method = "GET";
+    const rota = "perfiltelefone/" + telefone_usuario_logado;
+    callApi(method, rota, function (data) {
+        console.log(data);    
+        
+        // SETA O USUARIO LOGADO
+        const nome_usuario_logado = data.nome;
+        sessionStorage.setItem("usuario_logado", nome_usuario_logado);
+        document.querySelector("#nome-usuario").innerHTML = nome_usuario_logado;
+    });
 }
 
 function listarVeiculos(){
@@ -47,7 +64,7 @@ function loadDadosEstacionamento(aListaDados) {
     document.querySelector("#lista-atividades").innerHTML = "";
     aListaDados.forEach(function (data, key) {
         console.log(data);
-        const veiculo_id = data.veiculo_id;
+        const veiculo_id = data.veiculo;
         const method = "GET";
         const rota = "veiculo/" + veiculo_id;
         let placa = "";
@@ -264,11 +281,24 @@ function getEstacionamento(dadosEstacionamento, veiculo_id) {
 }
 
 function excluirVeiculo(codigo) {
-    const method = "DELETE";
-    const rota = "veiculo/" + codigo;
+
+    // Verifica se existe estacionamento para este veiculo
+    const method = "GET";
+    const rota = "estacionamentoveiculo/" + codigo;
     callApi(method, rota, function(data){
-        listarVeiculos();
-    });    
+        console.log(data);
+
+        if(data.length > 0){
+            alert("Este veiculo tem vinculo de estacionamento e nao pode ser excluido!");
+        } else {
+            const method = "DELETE";
+            const rota = "veiculo/" + codigo;
+            callApi(method, rota, function(data){
+                alert("Veiculo excluido com sucesso!");
+                listarVeiculos();
+            }); 
+        }  
+    });
 }
 
 function excluirCartao(codigo) {
@@ -311,7 +341,7 @@ function confirmarVeiculo(){
 }
 
 function confirmarCartao(){
-    const numero      = document.querySelector("#numero-cartao").value;
+    let numero      = document.querySelector("#numero-cartao").value;
     const nome        = document.querySelector("#titular-cartao").value;    
     const dataexpiracao = document.querySelector("#data-expiracao-cartao").value;    
     const cvv     = document.querySelector("#cvv-cartao").value;
@@ -323,7 +353,8 @@ function confirmarCartao(){
         numero:numero.trim(),       
         nome:nome,
         dataexpiracao:dataexpiracao,
-        cvv:cvv
+        cvv:cvv,
+        usuario:1
     };
 
     console.log(body);
@@ -357,7 +388,7 @@ function confirmarEstacionamento(veiculo_id){
     }
 
     let body = { 
-        veiculo_id,     
+        veiculo:veiculo_id,     
         endereco,
         regra,
         tempo
@@ -373,7 +404,7 @@ function confirmarEstacionamento(veiculo_id){
         function (data) {
             console.log("Estacionamento gravado!" + JSON.stringify(data));
 
-            const veiculo_id = data.veiculo_id;
+            const veiculo_id = data.veiculo;
             console.log("veiculo_id:" + veiculo_id);
 
             fecharModalEstacionamento(veiculo_id);
