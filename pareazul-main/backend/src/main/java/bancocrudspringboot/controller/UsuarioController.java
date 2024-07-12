@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import bancocrudspringboot.exception.ResourceNotFoundException;
 import bancocrudspringboot.model.Login;
 import bancocrudspringboot.model.Usuario;
-import bancocrudspringboot.repository.UsuariosRepository;
+import bancocrudspringboot.repository.UsuarioRepository;
 
 @CrossOrigin
 @RestController
@@ -24,7 +24,7 @@ import bancocrudspringboot.repository.UsuariosRepository;
 public class UsuarioController {
 
 	@Autowired
-	private UsuariosRepository usuarioRepository;
+	private UsuarioRepository usuarioRepository;
 
 	@GetMapping("/usuario")
 	@ResponseStatus(HttpStatus.OK)
