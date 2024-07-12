@@ -118,11 +118,11 @@ function logout() {
 }
 
 function login() {
-    const telefone = document.querySelector("#telefone").value;
+    const email = document.querySelector("#email").value;
     const senha = document.querySelector("#senha").value;
 
     const body = {
-        telefone : telefone,
+        email : email,
         senha : senha
     };
 
