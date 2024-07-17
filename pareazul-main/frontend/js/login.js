@@ -8,7 +8,7 @@ function onloadLogin() {
 }
 
 function validaSessao(pagina) {
-    const token_logado = sessionStorage.getItem("token_logado");
+    const token_logado = localStorage.getItem("token_logado");
     if (token_logado == "54a80097f23822cb26b6d5a980968601") {
         // redireciona para a pagina home pois usuario ja esta logado
         atualizaMenu();
@@ -106,13 +106,14 @@ function atualizaMenu() {
 }
 
 function logout() {
-    sessionStorage.setItem("token_logado", "");
+    localStorage.setItem("token_logado", "");
+    localStorage.setItem("usuario_logado", "");
 
     // Remove o token da sessao
-    sessionStorage.removeItem("token_logado");
+    localStorage.removeItem("token_logado");
 
     // Remove all saved data from sessionStorage
-    sessionStorage.clear();
+    localStorage.clear();
 
     window.location.href = "login.html";
 }
@@ -125,8 +126,7 @@ function login() {
         email : email,
         senha : senha
     };
-
-    // function callApi(method, rota, fn = false) {
+    
     callApiPost("POST", "login", function(data) {
 
         // VALIDAR LOGIN 
@@ -136,10 +136,10 @@ function login() {
         }
 
         // SETA O TOKEN
-        sessionStorage.setItem("token_logado", "54a80097f23822cb26b6d5a980968601");
+        localStorage.setItem("token_logado", "54a80097f23822cb26b6d5a980968601");
                 
-        const telefone_usuario = data.telefone;
-        sessionStorage.setItem("telefone_usuario_logado", telefone_usuario);
+        const usuario_logado = data.id;
+        localStorage.setItem("usuario_logado", usuario_logado);
                 
         // REDIRECIONA PARA A HOME
         window.location.href = "index.html";
@@ -197,3 +197,51 @@ function resetsenha() {
         window.location.href = "index.html";
     });
 }
+
+function confirmarUsuario(){
+    alert("DESENVOLVER A INSERCAO DE USUARIO!");
+
+    return true;
+    
+    const nome = document.querySelector("#nome-usuario").value;
+        
+    // {
+    //     "senha": "123456",
+    //     "nome": "JOAO DA SILVA",
+    //     "cpf": "01115818",
+    //     "email": "EMAIL@EMAIL.COMs",
+    //     "telefone": "4798863115"		
+    // }
+
+    let body = { 
+        // removido espaço da string com trim()
+        // numero:numero.trim(),       
+        // nome:nome,
+        // dataexpiracao:dataexpiracao,
+        // cvv:cvv,
+        // usuario:1
+    };
+
+    console.log(body);
+
+    const method = "POST";
+    const rota = "usuario";
+    callApiPost(
+        method,
+        rota,
+        function (data) {
+            console.log("Usuario gravado!" + JSON.stringify(data));
+            fecharModalUsuario();                  
+        },
+        body
+    );
+}
+
+function fecharModalUsuario(){
+    // fecharModalUsuario
+    const fechar = document.querySelector("#fecharModalUsuario");
+    fechar.click();
+}
+
+
+

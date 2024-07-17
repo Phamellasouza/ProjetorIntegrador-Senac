@@ -5,20 +5,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "Usuario")
+@Table(name = "Usuario", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
 public class Usuario {
 
     private long id;
+    private String email;
     private String senha;
+    
     private String nome;
     private String cpf;
-    private String email;
     private String telefone;
 
     @Id

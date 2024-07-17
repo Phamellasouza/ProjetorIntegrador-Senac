@@ -1,24 +1,40 @@
 function atualizaPainel(){
-    atualizaDadosPerfil();
     listarCartoes();
     listarVeiculos();
     listarEstacionamentos();
+    atualizaDadosPerfil();
 }
 
 function atualizaDadosPerfil(){
-    const telefone_usuario_logado = sessionStorage.getItem("telefone_usuario_logado");
-    document.querySelector("#telefone-usuario").value = telefone_usuario_logado;
-    
-    const method = "GET";
-    const rota = "perfiltelefone/" + telefone_usuario_logado;
-    callApi(method, rota, function (data) {
-        console.log(data);    
-        
-        // SETA O USUARIO LOGADO
-        const nome_usuario_logado = data.nome;
-        sessionStorage.setItem("usuario_logado", nome_usuario_logado);
-        document.querySelector("#nome-usuario").innerHTML = nome_usuario_logado;
-    });
+    const usuario_logado = localStorage.getItem("usuario_logado");
+
+    document.querySelector("#usuario_logado").value = usuario_logado;
+    if(parseInt(usuario_logado) > 0){
+        const method = "GET";
+        const rota = "usuario/" + usuario_logado;
+        callApi(method, rota, function (data) {
+
+            console.log("DADOS DO PERFIL - INICIO");
+
+            console.log(data);    
+            
+            // SETA O USUARIO LOGADO
+            const nome_usuario_logado = data.nome;
+            const cpf_usuario_logado = data.cpf;
+            const email_usuario_logado = data.email;
+            
+            //document.querySelector("#nome-usuario").innerHTML = nome_usuario_logado;
+            
+            // Atualiza os dados do modal de Perfil de Usuario
+            
+            document.querySelector("#nome-usuario-logado").innerHTML = nome_usuario_logado;
+            document.querySelector("#nome-usuario").value = nome_usuario_logado;
+            document.querySelector("#cpf-usuario").value = cpf_usuario_logado;
+            document.querySelector("#email-usuario").value = email_usuario_logado;                                
+        });
+    } else {
+        window.location.href = "login.html";
+    }
 }
 
 function listarVeiculos(){

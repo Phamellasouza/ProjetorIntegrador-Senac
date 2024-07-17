@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,18 @@ public class UsuarioController {
 		return this.usuarioRepository.save(cadastro);
 	}
 
+    // Listar um usuario
+	@GetMapping("/usuario/{usuario_id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Usuario> getCadastroById(@PathVariable(value = "usuario_id") Long cadastroId)
+			throws ResourceNotFoundException {
+				Usuario cadastro = usuarioRepository.findById(cadastroId)
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"Usuario não encontrado para o ID : " + cadastroId));
+
+		return ResponseEntity.ok().body(cadastro);
+	}
+
 	// Login
 	@PostMapping("/login")
 	@ResponseStatus(HttpStatus.OK)
@@ -48,8 +62,8 @@ public class UsuarioController {
 		String senha = cadastro.getSenha();
 
 		Usuario usuario = this.usuarioRepository.findUsuarioByEmailAndSenha(email, senha)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario ou senha inválido!"));
-        return usuario;
-	
+				.orElseThrow(() -> new ResourceNotFoundException("Usuario ou senha inválido!"));
+
+		return usuario;
 	}
 }
